@@ -67,8 +67,13 @@ function parse(src, filename, options) {
                 // That is no longer allowed so we convert the placeholder expressions into an
                 // `<invoke>` tag that will then be converted over to something like
                 // `<myMacro('a', 'b')/>`
-                var parsed = builder.parseExpression(expression);
-                if (parsed.type === 'FunctionCall') {
+                var parsed;
+
+                try {
+                    parsed = builder.parseExpression(expression);
+                } catch(e) {}
+
+                if (parsed && parsed.type === 'FunctionCall') {
                     var callee = parsed.callee;
                     if (callee.type === 'Identifier') {
                         var functionName = callee.name;
