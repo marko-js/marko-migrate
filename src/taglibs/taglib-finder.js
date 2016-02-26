@@ -129,7 +129,9 @@ function tryNodeModules(parent, helper) {
             var migratedTaglibPath = nodePath.join(moduleDir, 'marko.json');
 
             if (existsCached(taglibPath)) {
-                logging.getLogger().unmigrated(taglibPath);
+                if (!existsCached(migratedTaglibPath)) {
+                    logging.getLogger().unmigrated(taglibPath);
+                }
             } else if (existsCached(migratedTaglibPath)) {
                 taglibPath = migratedTaglibPath;
             } else {
