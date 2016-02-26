@@ -18,41 +18,47 @@ function migrateProject(rootDir) {
 
     var logger = logging.begin();
 
-    function updatePkgDependencies(pkg, dependenciesType, logEvent) {
+    function updatePkgDependencies(pkg, dependenciesType, modifiedList) {
         let dependencies = pkg[dependenciesType];
 
         if (!dependencies) {
-            return;
+            return false;
         }
 
         if (dependencies.hasOwnProperty('marko')) {
-            logEvent.info(`Updated "marko" version: ${dependencies.marko} → ${MARKO_VERSION} (${dependenciesType})`);
+            modifiedList.push(`Updated "marko" version: ${dependencies.marko} → ${MARKO_VERSION} (in "${dependenciesType}")`);
             dependencies.marko = MARKO_VERSION;
-
         }
 
         if (dependencies.hasOwnProperty('marko-widgets')) {
-            logEvent.info(`Updated "marko-widgets" version: ${dependencies['marko-widgets']} → ${MARKO_WIDGETS_VERSION} (${dependenciesType})`);
+            modifiedList.push(`Updated "marko-widgets" version: ${dependencies['marko-widgets']} → ${MARKO_WIDGETS_VERSION} (in "${dependenciesType}")`);
             dependencies['marko-widgets'] = MARKO_WIDGETS_VERSION;
         }
 
         if (dependencies.hasOwnProperty('lasso')) {
-            logEvent.info(`Updated "lasso" version: ${dependencies.lasso} → ${LASSO_VERSION} (${dependenciesType})`);
+            modifiedList.push(`Updated "lasso" version: ${dependencies.lasso} → ${LASSO_VERSION} (in "${dependenciesType}")`);
             dependencies.lasso = LASSO_VERSION;
         }
     }
 
     if (fs.existsSync(pkgPath)) {
         let pkg = require(pkgPath);
-        let logEvent = logger.modified(pkgPath);
 
-        updatePkgDependencies(pkg, 'dependencies', logEvent);
-        updatePkgDependencies(pkg, 'devDependencies', logEvent);
-        updatePkgDependencies(pkg, 'peerDependencies', logEvent);
+        var modifiedList = [];
 
-        fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2), { encoding: 'utf8' });
+        updatePkgDependencies(pkg, 'dependencies', modifiedList);
+        updatePkgDependencies(pkg, 'devDependencies', modifiedList);
+        updatePkgDependencies(pkg, 'peerDependencies', modifiedList);
+
+        if (modifiedList.length) {
+            let logEvent = logger.modified(pkgPath);
+            modifiedList.forEach((message) => {
+                logEvent.info(message);
+            });
+
+            fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2), { encoding: 'utf8' });
+        }
     }
-
 
     var queue = [];
 
@@ -127,13 +133,13 @@ function migrateProject(rootDir) {
     console.log(results.output);
 
     if (results.warningCount) {
-        console.log(chalk.red.bold(`Migration completed with ${results.warningCount} warning(s)`));
+        console.log(chalk.red.bold(`Migration completed with warning(s):`));
     } else {
-        console.log(chalk.green('Migration completed successfully!'));
+        console.log(chalk.green('Migration completed successfully!:'));
     }
 
-
-
+    console.log(chalk.red.bold(`- ${results.warningCount} warning(s)`));
+    console.log(chalk.yellow.bold(`- ${results.pendingTaskCount} pending task(s)`));
 }
 
 module.exports = migrateProject;

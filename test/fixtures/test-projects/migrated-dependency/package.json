@@ -39,7 +39,8 @@
     "raptor-util": "^1.0.9",
     "serve-static": "^1.6.2",
     "todomvc-app-css": "^1.0.1",
-    "todomvc-common": "^1.0.1"
+    "todomvc-common": "^1.0.1",
+    "installed-foo": "1.0.0"
   },
   "devDependencies": {
     "accessibility-developer-tools": "^2.7.0",

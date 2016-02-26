@@ -32,4 +32,16 @@ describe('marko-migrate/migrate-project' , function() {
     it('bad-taglib-body-property', function() {
         migrateProject('bad-taglib-body-property');
     });
+
+    it('unmigrated-dependencies', function() {
+        migrateProject('unmigrated-dependencies');
+    });
+
+    it('missing-dependency', function() {
+        migrateProject('missing-dependency');
+    });
+
+    it('taglib-outside-project', function() {
+        migrateProject('taglib-outside-project');
+    });
 });

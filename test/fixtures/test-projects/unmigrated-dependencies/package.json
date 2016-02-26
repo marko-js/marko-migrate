@@ -1,0 +1,8 @@
+{
+  "name": "test-project",
+  "version": "1.0.0",
+  "dependencies": {
+    "installed-foo": "^1.0.1",
+    "installed-bar": "^1.12.3"
+  }
+}

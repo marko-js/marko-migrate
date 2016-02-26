@@ -9,7 +9,8 @@ var colors = {
     created: chalk.green,
     moved: chalk.green,
     info: chalk.cyan,
-    warn: chalk.red.bold
+    warn: chalk.red.bold,
+    task: chalk.yellow.bold
 };
 
 class Event {
@@ -51,6 +52,7 @@ class Logger {
     constructor() {
         this.events = [];
         this.warnings = [];
+        this.pendingTasks = [];
     }
 
     modified(filename) {
@@ -88,6 +90,18 @@ class Logger {
         return event;
     }
 
+    unmigrated(filename) {
+        var event = new Event('task', `The following installed package should now be migrated: ${path.relative(cwd, filename)}`);
+        this.pendingTasks.push(event);
+        return event;
+    }
+
+    task(message) {
+        var event = new Event('task', message);
+        this.pendingTasks.push(event);
+        return event;
+    }
+
     toString() {
         return ;
     }
@@ -95,6 +109,11 @@ class Logger {
     end() {
         var output = this.events.join('');
         var warnings = this.warnings;
+        var pendingTasks = this.pendingTasks;
+
+        if (pendingTasks.length) {
+            output += colors.task.underline('\nPENDING TASKS:\n') + pendingTasks.join('');
+        }
 
         if (warnings.length) {
             output += colors.warn.underline('\nWARNINGS:\n') + warnings.join('');
@@ -102,7 +121,8 @@ class Logger {
 
         return {
             output,
-            warningCount: warnings.length
+            warningCount: warnings.length,
+            pendingTaskCount: pendingTasks.length
         };
     }
 }

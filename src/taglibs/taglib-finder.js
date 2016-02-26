@@ -15,6 +15,8 @@
 */
 
 require('raptor-polyfill/string/endsWith');
+
+var raptorModulesUtil = require('raptor-modules/util');
 var logging = require('../logging');
 var taglibLoader = require('./taglib-loader');
 var trailingSlashRegExp = /[\\/]$/;
@@ -27,6 +29,20 @@ var findCache = {};
 var taglibsForNodeModulesDirCache = {};
 
 var realpathCache = {};
+
+function hasDependency(pkg, packageName) {
+    if (pkg.dependencies && pkg.dependencies.hasOwnProperty(packageName)) {
+        return true;
+    }
+    if (pkg.devDependencies && pkg.devDependencies.hasOwnProperty(packageName)) {
+        return true;
+    }
+    if (pkg.peerDependencies && pkg.peerDependencies.hasOwnProperty(packageName)) {
+        return true;
+    }
+
+    return false;
+}
 
 function relativePath(filename) {
     return nodePath.relative(process.cwd(), filename);
@@ -58,6 +74,11 @@ function realpathCached(path) {
 function tryDir(dirname, helper) {
     var taglibPath = nodePath.join(dirname, 'marko-taglib.json');
     if (existsCached(taglibPath)) {
+
+        if (helper.projectRootPackage.__dirname.startsWith(dirname) && dirname.length < helper.projectRootPackage.__dirname.length) {
+            logging.getLogger().warn(`The taglib at path "${relativePath(taglibPath)}" is outside the project root directory. This taglib will *not* be discovered in Marko v3.`);
+            logging.getLogger().task(`If it is needed, move the taglib at path "${relativePath(taglibPath)}" to a directory within the project root directory (${relativePath(helper.projectRootPackage.__dirname)}).`);
+        }
         var taglib = taglibLoader.load(taglibPath);
         helper.addTaglib(taglib);
     }
@@ -108,17 +129,24 @@ function tryNodeModules(parent, helper) {
             var migratedTaglibPath = nodePath.join(moduleDir, 'marko.json');
 
             if (existsCached(taglibPath)) {
-                taglibPath = fs.realpathSync(taglibPath);
-
-                var taglib = taglibLoader.load(taglibPath);
-                taglib.moduleName = packageName;
-                taglibsForNodeModulesDir.push(taglib);
-                helper.addTaglib(taglib);
+                logging.getLogger().unmigrated(taglibPath);
             } else if (existsCached(migratedTaglibPath)) {
-                logging.getLogger().warn(`An installed package (${relativePath(migratedTaglibPath)}) has already been migrated . Dependencies should be migrated after their dependents.`);
+                taglibPath = migratedTaglibPath;
+            } else {
+                return;
             }
 
+            var projectRootPackage = helper.projectRootPackage;
+            if (!hasDependency(projectRootPackage, packageName)) {
+                logging.getLogger().warn(`An installed package (${packageName}) is not declared in dependencies/devDependencies/peerDependencies. This taglib will not be discovered in Marko v3 unless you add it as a dependency in the following package: ${relativePath(projectRootPackage.__filename)}`);
+                logging.getLogger().task(`Add "${packageName}" to either "dependencies", "devDependencies" or "peerDependencies" in "${relativePath(projectRootPackage.__filename)}"`);
+            }
 
+            taglibPath = fs.realpathSync(taglibPath);
+            var taglib = taglibLoader.load(taglibPath);
+            taglib.moduleName = packageName;
+            taglibsForNodeModulesDir.push(taglib);
+            helper.addTaglib(taglib);
         };
 
         fs.readdirSync(nodeModulesDir)
@@ -188,7 +216,8 @@ function find(dirname, registeredTaglibs) {
             added[taglib.path] = true;
             found.push(taglib);
         },
-        foundTaglibPackages: {}
+        foundTaglibPackages: {},
+        projectRootPackage: raptorModulesUtil.getModuleRootPackage(dirname)
     };
 
     findHelper(dirname, helper);

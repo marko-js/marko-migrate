@@ -20,6 +20,7 @@
     "marko": "^3.0.0-alpha.2",
     "property-handlers": "^1.0.1",
     "raptor-json": "^1.1.0",
+    "raptor-modules": "^1.2.7",
     "raptor-polyfill": "^1.0.2",
     "raptor-regexp": "^1.0.1",
     "raptor-util": "^1.0.10",

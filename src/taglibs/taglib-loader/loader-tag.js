@@ -421,6 +421,18 @@ TagHandlers.prototype = {
         if (value === false) {
             this.tag.escapeXmlBody = false;
         }
+    },
+    openTagOnly: function(value) {
+        // Marko v3 -- Just ignore
+    },
+    codeGenerator: function(value) {
+        // Marko v3 -- Just ignore
+    },
+    nodeFactory: function(value) {
+        // Marko v3 -- Just ignore
+    },
+    body: function(value) {
+        // Marko v3 -- Just ignore
     }
 };
 

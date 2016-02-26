@@ -100,7 +100,7 @@ module.exports = function scanTagsDir(tagsConfigPath, tagsConfigDirname, dir, ta
                 }
             }
 
-            tag = loader.tagLoader.loadTag(tagDef, tagsConfigPath, taglib, tagDirname);
+            tag = loader.tagLoader.loadTag(tagDef, tagFile, taglib, tagDirname);
             tag.name = tag.name || tagName;
             taglib.addTag(tag);
         } else {
