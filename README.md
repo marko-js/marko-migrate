@@ -11,7 +11,9 @@ npm install marko-migrate --global
 
 # Usage
 
-:warning: :warning: This tool modifies a project in place! Make sure you are using source control or have your code backed up! If you are using source control then make sure everything has been committed first! :warning: :warning:
+:warning: :warning: ___WARNING:___ This tool modifies a project in place! Make sure you are using source control or have your code backed up! If you are using source control then make sure everything has been committed first! :warning: :warning:
+
+___IMPORTANT:___ Make sure you run an `npm install` for your current project _before_ running the migration script!
 
 ## Migrate a project and use the HTML syntax
 
@@ -26,6 +28,8 @@ marko-migrate --syntax html
 cd my-project/
 marko-migrate --syntax concise
 ```
+
+# Example Output
 
 You will receive output similar to the following:
 
