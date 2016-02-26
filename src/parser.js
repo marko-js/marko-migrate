@@ -95,7 +95,7 @@ function parse(src, filename, options) {
                 stack.push(el);
             },
             onprocessinginstruction: function(name, data) {
-                handleText(data);
+                handleText('<' + data + '>');
             },
 
             oncdatastart: function() {
