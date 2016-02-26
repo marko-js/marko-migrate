@@ -11,6 +11,9 @@ const MARKO_VERSION = '^3.0.0-rc.1';
 const MARKO_WIDGETS_VERSION = '^6.0.0-alpha.1';
 const LASSO_VERSION = '^2.0.0';
 
+function relativePath(filename) {
+    return path.relative(process.cwd(), filename);
+}
 
 function migrateProject(rootDir) {
 
@@ -107,11 +110,16 @@ function migrateProject(rootDir) {
                 });
             } else if (name.endsWith('.marko')) {
 
-                let transformedSrc = transformTemplate(filePath, {
-                    logger: logger
-                });
-                fs.writeFileSync(filePath, transformedSrc, { encoding: 'utf8' });
-                logger.modified(filePath);
+                try {
+                    let transformedSrc = transformTemplate(filePath, {
+                        logger: logger
+                    });
+                    fs.writeFileSync(filePath, transformedSrc, { encoding: 'utf8' });
+                    logger.modified(filePath);
+                } catch(e) {
+                    logger.warn(`Unable to migrate template at path "${relativePath(filePath)}". Error: ${e.toString()}`);
+                }
+
             }
         });
     }

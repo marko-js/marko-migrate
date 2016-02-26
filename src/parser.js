@@ -5,6 +5,7 @@ var builder = require('marko/compiler').builder;
 var expressionParser = require('./util/expression-parser');
 var parseString = require('./util/parseString');
 var taglibs = require('./taglibs');
+var handleBinaryOperators = require('./util/handleBinaryOperators');
 
 function isExpressionType(targetType) {
     return targetType === 'float' ||
@@ -75,6 +76,7 @@ function parse(src, filename, options) {
                         if (targetType === 'string') {
                             value = parseString(value);
                         } else if (isExpressionType(targetType)) {
+                            value = handleBinaryOperators(value);
                             value = builder.parseExpression(value);
                         } else {
                             value = builder.literal(value);

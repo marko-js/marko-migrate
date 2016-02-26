@@ -44,4 +44,12 @@ describe('marko-migrate/migrate-project' , function() {
     it('taglib-outside-project', function() {
         migrateProject('taglib-outside-project');
     });
+
+    it('bad-template', function() {
+        migrateProject('bad-template');
+    });
+
+    it('bad-taglib', function() {
+        migrateProject('bad-taglib');
+    });
 });

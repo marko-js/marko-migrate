@@ -1,5 +1,6 @@
 var builder = require('marko/compiler').builder;
 var expressionParser = require('./expression-parser');
+var handleBinaryOperators = require('./handleBinaryOperators');
 
 function parseString(value) {
     var finalValue = '';
@@ -26,7 +27,7 @@ function parseString(value) {
     });
 
     if (!hasText && foundExpression) {
-        return builder.parseExpression(foundExpression);
+        return builder.parseExpression(handleBinaryOperators(foundExpression));
     } else {
         return builder.literal(finalValue);
     }
