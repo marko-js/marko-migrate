@@ -15,6 +15,7 @@ function isExpressionType(targetType) {
         targetType === 'int' ||
         targetType === 'expression' ||
         targetType === 'object' ||
+        targetType === 'boolean' ||
         targetType === 'array';
 }
 

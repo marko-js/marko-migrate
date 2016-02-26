@@ -21,8 +21,8 @@ function migrateProject(name) {
 }
 
 describe('marko-migrate/migrate-project' , function() {
-    it('success', function() {
-        migrateProject('success');
+    it('todomvc-marko', function() {
+        migrateProject('todomvc-marko');
     });
 
     it('migrated-dependency', function() {

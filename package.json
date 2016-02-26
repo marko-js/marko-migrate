@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "argly": "^1.0.0",
     "chalk": "^1.1.1",
     "htmlparser2": "^3.9.0",
     "jsonminify": "^0.2.3",

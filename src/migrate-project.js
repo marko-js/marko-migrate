@@ -15,7 +15,8 @@ function relativePath(filename) {
     return path.relative(process.cwd(), filename);
 }
 
-function migrateProject(rootDir) {
+function migrateProject(rootDir, options) {
+    options = options || {};
 
     var pkgPath = path.join(rootDir, 'package.json');
 
@@ -112,7 +113,8 @@ function migrateProject(rootDir) {
 
                 try {
                     let transformedSrc = transformTemplate(filePath, {
-                        logger: logger
+                        logger: logger,
+                        syntax: options.syntax
                     });
                     fs.writeFileSync(filePath, transformedSrc, { encoding: 'utf8' });
                     logger.modified(filePath);
