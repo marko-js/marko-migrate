@@ -1,3 +1,4 @@
+'use strict';
 var ok = require('assert').ok;
 var path = require('path');
 var htmlparser = require("htmlparser2");
@@ -6,6 +7,19 @@ var expressionParser = require('./util/expression-parser');
 var parseString = require('./util/parseString');
 var taglibs = require('./taglibs');
 var handleBinaryOperators = require('./util/handleBinaryOperators');
+
+function getMacroName(el) {
+    var functionAttrValue = el.getAttributeValue('function');
+    var functionString = functionAttrValue.value.trim();
+    var argIndex = functionString.indexOf('(');
+
+    // We need to separate out the arguments from the name
+    if (argIndex === -1) {
+        return functionString;
+    } else {
+        return functionString.substring(0, argIndex);
+    }
+}
 
 function isExpressionType(targetType) {
     return targetType === 'float' ||
@@ -36,6 +50,7 @@ function parse(src, filename, options) {
 
     var currentParent = root;
     var stack = [currentParent];
+    var foundMacros = {};
 
     function handleText(text) {
 
@@ -46,6 +61,33 @@ function parse(src, filename, options) {
                 finalText += text;
             },
             expression: function (expression, escapeXml) {
+                // Marko v2 allowed macros to be invoked inside placeholders. For example:
+                // <li>${myMacro('foo', 'bar')}</li>
+                //
+                // That is no longer allowed so convert the placeholder expressions into an
+                // `<invoke>` tag that will then be converted over to something like
+                // `<myMacro('a', 'b')/>`
+                var parsed = builder.parseExpression(expression);
+                if (parsed.type === 'FunctionCall') {
+                    var callee = parsed.callee;
+                    if (callee.type === 'Identifier') {
+                        var functionName = callee.name;
+                        if (foundMacros.hasOwnProperty(functionName)) {
+                            if (finalText) {
+                                let textNode = builder.text(builder.literal(finalText));
+                                currentParent.appendChild(textNode);
+                                finalText = '';
+                            }
+
+                            var invokeEl = builder.htmlElement('invoke', {
+                                'function': builder.literal(expression)
+                            });
+
+                            currentParent.appendChild(invokeEl);
+                            return;
+                        }
+                    }
+                }
                 finalText += (escapeXml ? '${' : '$!{') + expression + '}';
             },
             scriptlet: function (scriptlet) {
@@ -90,6 +132,10 @@ function parse(src, filename, options) {
                 });
 
                 var el = builder.htmlElement(tagName, attributes);
+                if (el.tagName === 'def') {
+                    foundMacros[getMacroName(el)] = true;
+                }
+
                 currentParent.appendChild(el);
                 currentParent = el;
                 stack.push(el);

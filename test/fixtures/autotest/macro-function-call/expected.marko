@@ -1,0 +1,23 @@
+<macro myMacro(foo, bar)>
+    <div>
+        ${foo} - ${bar}
+    </div>
+</macro>
+<ul>
+    <li>
+        <myMacro('a', 'b')/>
+    </li>
+    <li>
+        <myMacro('c', 'c')/>
+    </li>
+</ul>
+
+~~~~~~~
+macro myMacro(foo, bar)
+    div
+        - ${foo} - ${bar}
+ul
+    li
+        myMacro('a', 'b')
+    li
+        myMacro('c', 'c')
