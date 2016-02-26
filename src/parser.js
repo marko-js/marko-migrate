@@ -64,7 +64,7 @@ function parse(src, filename, options) {
                 // Marko v2 allowed macros to be invoked inside placeholders. For example:
                 // <li>${myMacro('foo', 'bar')}</li>
                 //
-                // That is no longer allowed so convert the placeholder expressions into an
+                // That is no longer allowed so we convert the placeholder expressions into an
                 // `<invoke>` tag that will then be converted over to something like
                 // `<myMacro('a', 'b')/>`
                 var parsed = builder.parseExpression(expression);
@@ -102,7 +102,7 @@ function parse(src, filename, options) {
         currentParent.appendChild(textNode);
     }
 
-    var parser = this.parser = new htmlparser.Parser({
+    var parser = new htmlparser.Parser({
             onopentag: function(tagName, attrs) {
                 tagName = tagName.replace(/[.]/g, ':');
 
