@@ -15,6 +15,8 @@ npm install marko-migrate --global
 
 ___IMPORTANT:___ Make sure you run an `npm install` for your current project _before_ running the migration script!
 
+___NOTE:___ Node.js v4+ is required
+
 ## Migrate a project and use the HTML syntax
 
 ```
