@@ -1,0 +1,16 @@
+<for(name,value in settings)>
+    <b>
+        ${name}
+    </b>
+    :
+        ${value}
+</for>
+
+~~~~~~~
+for(name,value in settings)
+    b
+        - ${name}
+    ---
+    :
+        ${value}
+    ---

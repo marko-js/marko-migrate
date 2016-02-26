@@ -1,0 +1,16 @@
+<div for(name,value in settings)>
+    <b>
+        ${name}
+    </b>
+    :
+        ${value}
+</div>
+
+~~~~~~~
+div for(name,value in settings)
+    b
+        - ${name}
+    ---
+    :
+        ${value}
+    ---
