@@ -15,12 +15,71 @@ function relativePath(filename) {
     return path.relative(process.cwd(), filename);
 }
 
+function isExcluded(name) {
+    if (name === 'node_modules') {
+        return true;
+    }
+    if (name.startsWith('.')) {
+        return true;
+    }
+}
+
+
+
 function migrateProject(rootDir, options) {
     options = options || {};
 
     var pkgPath = path.join(rootDir, 'package.json');
 
     var logger = logging.begin();
+    var logFile = path.join(rootDir, 'marko-migrate.log');
+
+    function finish() {
+        logger.task(`Delete log file: ${relativePath(logFile)}`);
+
+        var results = logger.end();
+
+        console.log(results.output);
+
+        fs.writeFileSync(logFile, results.outputNoColor, { encoding: 'utf8' });
+
+        if (results.warningCount) {
+            console.log(chalk.red.bold(`Migration completed with warning(s):`));
+        } else {
+            console.log(chalk.green('Migration completed successfully!:'));
+        }
+
+        console.log(chalk.red.bold(`- ${results.warningCount} warning(s)`));
+        console.log(chalk.yellow.bold(`- ${results.pendingTaskCount} remaining task(s)`));
+    }
+
+
+    if (fs.existsSync(logFile)) {
+        logger.warn(`Project has already been migrated! Found "${relativePath(logFile)}". Aborting.`);
+        finish();
+        return;
+    }
+
+    var backupDir = path.join(rootDir, '.marko-migrate-backup');
+
+    function backup(dir, targetDir) {
+        var files = fs.readdirSync(dir);
+        files.forEach((file) => {
+            if (isExcluded(file)) {
+                return;
+            }
+
+            var sourceFile = path.join(dir, file);
+            cp('-R', sourceFile, targetDir + '/');
+        });
+    }
+
+    backup(rootDir, backupDir);
+    logger.task(`Delete backup directory: ${relativePath(backupDir)}`);
+
+    var cacheDir = path.join(rootDir, '.cache/');
+    rm('-rf', cacheDir);
+    logger.removed(cacheDir);
 
     function updatePkgDependencies(pkg, dependenciesType, modifiedList) {
         let dependencies = pkg[dependenciesType];
@@ -61,6 +120,8 @@ function migrateProject(rootDir, options) {
             });
 
             fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2), { encoding: 'utf8' });
+
+            logger.task('Run "npm install" to install the latest versions of packages.');
         }
     }
 
@@ -75,15 +136,6 @@ function migrateProject(rootDir, options) {
             return queue.shift();
         } else {
             return undefined;
-        }
-    }
-
-    function isExcluded(name) {
-        if (name === 'node_modules') {
-            return true;
-        }
-        if (name.startsWith('.')) {
-            return true;
         }
     }
 
@@ -138,18 +190,7 @@ function migrateProject(rootDir, options) {
         mv(taglibInfo.filePath, taglibInfo.newFilePath);
     });
 
-    var results = logger.end();
-
-    console.log(results.output);
-
-    if (results.warningCount) {
-        console.log(chalk.red.bold(`Migration completed with warning(s):`));
-    } else {
-        console.log(chalk.green('Migration completed successfully!:'));
-    }
-
-    console.log(chalk.red.bold(`- ${results.warningCount} warning(s)`));
-    console.log(chalk.yellow.bold(`- ${results.pendingTaskCount} pending task(s)`));
+    finish();
 }
 
 module.exports = migrateProject;

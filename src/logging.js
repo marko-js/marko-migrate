@@ -112,7 +112,7 @@ class Logger {
         var pendingTasks = this.pendingTasks;
 
         if (pendingTasks.length) {
-            output += colors.task.underline('\nPENDING TASKS:\n') + pendingTasks.join('');
+            output += colors.task.underline('\nREMAINING TASKS:\n') + pendingTasks.join('');
         }
 
         if (warnings.length) {
@@ -121,6 +121,7 @@ class Logger {
 
         return {
             output,
+            outputNoColor: chalk.stripColor(output),
             warningCount: warnings.length,
             pendingTaskCount: pendingTasks.length
         };

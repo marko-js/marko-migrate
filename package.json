@@ -11,6 +11,10 @@
   "bin": {
     "marko-migrate": "bin/marko-migrate"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marko-js/marko-migrate.git"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
