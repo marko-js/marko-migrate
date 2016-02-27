@@ -287,6 +287,11 @@
                     "type": "expression"
                 }
             }
+        },
+        "label": {
+            "attributes": {
+                "for": "string"
+            }
         }
     },
     "text-transformer": {
