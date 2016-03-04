@@ -1,7 +1,5 @@
 <macro myMacro(foo, bar)>
-    <div>
-        ${foo} - ${bar}
-    </div>
+    <div>${foo} - ${bar}</div>
 </macro>
 <ul>
     <li>
@@ -14,8 +12,7 @@
 
 ~~~~~~~
 macro myMacro(foo, bar)
-    div
-        - ${foo} - ${bar}
+    div - ${foo} - ${bar}
 ul
     li
         myMacro('a', 'b')

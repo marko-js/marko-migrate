@@ -146,7 +146,15 @@ function parse(src, filename, options) {
                 stack.push(el);
             },
             onprocessinginstruction: function(name, data) {
-                handleText('<' + data + '>');
+                if (data.startsWith('!')) {
+                    var doctypeNode = builder.documentType(builder.literal(data.substring(1)));
+                    currentParent.appendChild(doctypeNode);
+                } else if (data.startsWith('?') && data.endsWith('?')) {
+                    var declarationNode = builder.declaration(builder.literal(data.substring(1, data.length-1)));
+                    currentParent.appendChild(declarationNode);
+                } else {
+                    handleText('<' + data + '>');
+                }
             },
 
             oncdatastart: function() {
@@ -164,7 +172,8 @@ function parse(src, filename, options) {
                 currentParent = stack[stack.length - 1];
             },
             oncomment: function(comment) {
-                handleText('<!--' + comment + '-->');
+                var commentNode = builder.htmlComment(builder.literal(comment));
+                currentParent.appendChild(commentNode);
             }
         }, parserOptions);
 

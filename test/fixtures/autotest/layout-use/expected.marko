@@ -1,61 +1,34 @@
 <layout-use("./layout-default.marko") show-header=false>
-    <layout-put into="body">
-        BODY CONTENT
-    </layout-put>
-    <layout-put into="footer">
-        FOOTER CONTENT
-    </layout-put>
+    <layout-put into="body">BODY CONTENT</layout-put>
+    <layout-put into="footer">FOOTER CONTENT</layout-put>
 </layout-use>
 <layout-use("./layout-default.marko") show-header=true>
-    <layout-put into="header">
-        HEADER CONTENT
-    </layout-put>
-    <layout-put into="body">
-        BODY CONTENT
-    </layout-put>
-    <layout-put into="footer">
-        FOOTER CONTENT
-    </layout-put>
+    <layout-put into="header">HEADER CONTENT</layout-put>
+    <layout-put into="body">BODY CONTENT</layout-put>
+    <layout-put into="footer">FOOTER CONTENT</layout-put>
 </layout-use>
 <layout-use("./layout-default.marko") show-header=true>
     <layout-put into="header" value="VALUE HEADER"/>
-    <layout-put into="body">
-        BODY CONTENT
-    </layout-put>
-    <layout-put into="footer">
-        FOOTER CONTENT
-    </layout-put>
+    <layout-put into="body">BODY CONTENT</layout-put>
+    <layout-put into="footer">FOOTER CONTENT</layout-put>
 </layout-use>
 <layout-use(require.resolve("./layout-default.marko")) show-header=true>
-    <layout-put into="body">
-        BODY CONTENT
-    </layout-put>
-    <layout-put into="footer">
-        FOOTER CONTENT
-    </layout-put>
+    <layout-put into="body">BODY CONTENT</layout-put>
+    <layout-put into="footer">FOOTER CONTENT</layout-put>
 </layout-use>
 
 ~~~~~~~
 layout-use("./layout-default.marko") show-header=false
-    layout-put into="body"
-        - BODY CONTENT
-    layout-put into="footer"
-        - FOOTER CONTENT
+    layout-put into="body" - BODY CONTENT
+    layout-put into="footer" - FOOTER CONTENT
 layout-use("./layout-default.marko") show-header=true
-    layout-put into="header"
-        - HEADER CONTENT
-    layout-put into="body"
-        - BODY CONTENT
-    layout-put into="footer"
-        - FOOTER CONTENT
+    layout-put into="header" - HEADER CONTENT
+    layout-put into="body" - BODY CONTENT
+    layout-put into="footer" - FOOTER CONTENT
 layout-use("./layout-default.marko") show-header=true
     layout-put into="header" value="VALUE HEADER"
-    layout-put into="body"
-        - BODY CONTENT
-    layout-put into="footer"
-        - FOOTER CONTENT
+    layout-put into="body" - BODY CONTENT
+    layout-put into="footer" - FOOTER CONTENT
 layout-use(require.resolve("./layout-default.marko")) show-header=true
-    layout-put into="body"
-        - BODY CONTENT
-    layout-put into="footer"
-        - FOOTER CONTENT
+    layout-put into="body" - BODY CONTENT
+    layout-put into="footer" - FOOTER CONTENT

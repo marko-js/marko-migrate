@@ -1,15 +1,12 @@
 <div for(name,value in settings)>
-    <b>
-        ${name}
-    </b>
+    <b>${name}</b>
     :
         ${value}
 </div>
 
 ~~~~~~~
 div for(name,value in settings)
-    b
-        - ${name}
+    b - ${name}
     ---
     :
         ${value}
