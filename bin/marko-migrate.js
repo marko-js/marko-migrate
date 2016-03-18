@@ -7,6 +7,14 @@ var options = require('argly')
         '--syntax -s': {
             type: 'string',
             description: 'The syntax to use for migrated templates. Either "html" (default) or "concise"'
+        },
+        '--template -t': {
+            type: 'string',
+            description: 'A single template to migrate'
+        },
+        '--watch -w': {
+            type: 'boolean',
+            description: 'Watch and migrate a single template'
         }
     })
     .usage('Usage: $0 [options]')
@@ -29,4 +37,31 @@ var options = require('argly')
     })
     .parse();
 
-require('../').migrateProject(process.cwd(), options);
+
+if (options.template) {
+    var path = require('path');
+    var fs = require('fs');
+
+    var templatePath = path.resolve(process.cwd(), options.template);
+    var migrateOptions = {
+        syntax: options.syntax || 'html'
+    };
+
+    var migrateTemplate = function() {
+        console.log('Migrated "' + templatePath + '":');
+        var transformed = require('../').transformTemplate(templatePath, migrateOptions);
+        console.log('---------------------------');
+        console.log(transformed);
+        console.log('---------------------------');
+    };
+
+    migrateTemplate();
+
+    if (options.watch) {
+        fs.watch(templatePath, migrateTemplate);
+        console.log('(watching template for changes)');
+    }
+} else {
+    require('../').migrateProject(process.cwd(), options);
+}
+
