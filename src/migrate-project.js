@@ -7,8 +7,8 @@ var transformTemplate = require('./transform-template');
 var logging = require('./logging');
 var chalk = require('chalk');
 
-const MARKO_VERSION = '^3.0.0-rc.1';
-const MARKO_WIDGETS_VERSION = '^6.0.0-alpha.1';
+const MARKO_VERSION = '^3.0.3';
+const MARKO_WIDGETS_VERSION = '^6.0.0';
 const LASSO_VERSION = '^2.0.0';
 
 function relativePath(filename) {
