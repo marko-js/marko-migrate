@@ -303,8 +303,15 @@ parse = function (str, listeners, options) {
                 // helper.addText('\\');
 
                 helper.addText(str.substring(textStart, startMatches.index));
-                //Add everything preceeding the start token
-                helper.addText(startMatches[0]);
+
+                if (startMatches[0] === '\\$') {
+                    //Add everything preceeding the start token
+                    helper.addText(startMatches[0].substring(1));
+                } else {
+                    // The match is \${ or \$!{... we need to include the escape character
+                    helper.addText(startMatches[0]);
+                }
+
                 //Add the start token excluding the initial escape character
                 textStart = startRegExp.lastIndex;
                 // The next text block we find will be after this match
