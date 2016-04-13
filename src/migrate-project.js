@@ -7,6 +7,7 @@ var transformTemplate = require('./transform-template');
 var logging = require('./logging');
 var chalk = require('chalk');
 
+var semver = require('semver');
 const MARKO_VERSION = '^3.0.3';
 const MARKO_WIDGETS_VERSION = '^6.0.0';
 const LASSO_VERSION = '^2.0.0';
@@ -88,19 +89,25 @@ function migrateProject(rootDir, options) {
             return false;
         }
 
-        if (dependencies.hasOwnProperty('marko')) {
-            modifiedList.push(`Updated "marko" version: ${dependencies.marko} → ${MARKO_VERSION} (in "${dependenciesType}")`);
-            dependencies.marko = MARKO_VERSION;
-        }
+        compare('marko', MARKO_VERSION);
+        compare('marko-widgets', MARKO_WIDGETS_VERSION);
+        compare('lasso', LASSO_VERSION);
 
-        if (dependencies.hasOwnProperty('marko-widgets')) {
-            modifiedList.push(`Updated "marko-widgets" version: ${dependencies['marko-widgets']} → ${MARKO_WIDGETS_VERSION} (in "${dependenciesType}")`);
-            dependencies['marko-widgets'] = MARKO_WIDGETS_VERSION;
-        }
+        function compare(name, required){
+            if (!dependencies.hasOwnProperty(name)) {
+                return;
+            }
 
-        if (dependencies.hasOwnProperty('lasso')) {
-            modifiedList.push(`Updated "lasso" version: ${dependencies.lasso} → ${LASSO_VERSION} (in "${dependenciesType}")`);
-            dependencies.lasso = LASSO_VERSION;
+            var current = dependencies[name];
+            var required_version = required.substr(1) /* converted from range (^x.x.x) to version (x.x.x) */
+
+            /* return if `required_version` is less than `current` (treated as a range) */
+            if (semver.ltr(required_version, current)) {
+                return;
+            }
+
+            modifiedList.push(`Updated "${name}" version: ${current} → ${required} (in "${dependenciesType}")`);
+            dependencies[name] = required;
         }
     }
 
