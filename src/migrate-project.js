@@ -99,7 +99,7 @@ function migrateProject(rootDir, options) {
             }
 
             var current = dependencies[name];
-            var required_version = required.substr(1) /* converted from range (^x.x.x) to version (x.x.x) */
+            var required_version = required.substr(1); /* converted from range (^x.x.x) to version (x.x.x) */
 
             /* return if `required_version` is less than `current` (treated as a range) */
             if (semver.ltr(required_version, current)) {
