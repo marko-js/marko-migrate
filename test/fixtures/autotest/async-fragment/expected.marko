@@ -1,28 +1,19 @@
 <async-fragment data-provider=data.userProfileDataProvider var="userProfile"
     arg-userId=data.userId>
-
     <ul>
-        <li>
-            First name: ${userProfile.firstName}
-        </li>
-        <li>
-            Last name: ${userProfile.lastName}
-        </li>
-        <li>
-            Email address: ${userProfile.email}
-        </li>
+        <li>First name: ${userProfile.firstName}</li>
+        <li>Last name: ${userProfile.lastName}</li>
+        <li>Email address: ${userProfile.email}</li>
     </ul>
-
 </async-fragment>
 
 ~~~~~~~
-async-fragment [ data-provider=data.userProfileDataProvider var="userProfile"
-    arg-userId=data.userId ]
-
+async-fragment [
+        data-provider=data.userProfileDataProvider
+        var="userProfile"
+        arg-userId=data.userId
+    ]
     ul
-        li
-            - First name: ${userProfile.firstName}
-        li
-            - Last name: ${userProfile.lastName}
-        li
-            - Email address: ${userProfile.email}
+        li - First name: ${userProfile.firstName}
+        li - Last name: ${userProfile.lastName}
+        li - Email address: ${userProfile.email}

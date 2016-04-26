@@ -1,0 +1,8 @@
+<tr data-bind="if: isVisible(),
+               css: { danger: (!isPaid() && isOverdue()) }"/>
+
+~~~~~~~
+tr [
+        data-bind="if: isVisible(),
+               css: { danger: (!isPaid() && isOverdue()) }"
+    ]

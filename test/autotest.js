@@ -40,14 +40,19 @@ function autoTest(name, dir, run, options, done) {
             expected = JSON.parse(expectedJSON);
         }
 
-        assert.deepEqual(
-                (isJSON ? JSON.parse(actualJSON) : actual),
-                expected,
-                'Unexpected output for "' + name + '":\nEXPECTED (' + expectedPath + '):\n---------\n' +
-                (isJSON ? expectedJSON : expected) +
-                '\n---------\nACTUAL (' + actualPath + '):\n---------\n' +
-                (isJSON ? actualJSON : actual) +
-                '\n---------');
+        try {
+            assert.deepEqual(
+                    (isJSON ? JSON.parse(actualJSON) : actual),
+                    expected,
+                    'Unexpected output for "' + name + '":\nEXPECTED (' + expectedPath + '):\n---------\n' +
+                    (isJSON ? expectedJSON : expected) +
+                    '\n---------\nACTUAL (' + actualPath + '):\n---------\n' +
+                    (isJSON ? actualJSON : actual) +
+                    '\n---------');
+        } catch(e) {
+            throw new Error('Unexpected output for test "' + name + '"');
+        }
+
     }
 
     try {

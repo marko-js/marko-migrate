@@ -2,9 +2,7 @@
     var changeCase = require("change-case");
     var foo = require("foo");
 </script>
-<div>
-    Hello ${changeCase.titleCase('john doe')}!
-</div>
+<div>Hello ${changeCase.titleCase('john doe')}!</div>
 
 ~~~~~~~
 script marko-init
@@ -12,5 +10,4 @@ script marko-init
     var changeCase = require("change-case");
     var foo = require("foo");
     ---
-div
-    - Hello ${changeCase.titleCase('john doe')}!
+div - Hello ${changeCase.titleCase('john doe')}!
