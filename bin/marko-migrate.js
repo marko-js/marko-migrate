@@ -1,3 +1,5 @@
+var spawnSync = require('child_process').spawnSync;
+
 var options = require('argly')
     .createParser({
         '--help': {
@@ -15,6 +17,10 @@ var options = require('argly')
         '--watch -w': {
             type: 'boolean',
             description: 'Watch and migrate a single template'
+        },
+        '--after-script': {
+            type: 'string',
+            description: 'A path to a JavaScript file to run as a final step (optional)'
         }
     })
     .usage('Usage: $0 [options]')
@@ -62,6 +68,17 @@ if (options.template) {
         console.log('(watching template for changes)');
     }
 } else {
+    console.log('Running `npm install`...');
+
+    var npmInstallResult = spawnSync('npm', ['install'], {
+        stdio: [process.stdin, process.stdout, process.stderr]
+    });
+
+    if (npmInstallResult.status !== 0) {
+        console.error('`npm install` failed. Aborting migration.');
+        return process.exit(1);
+    }
+
     require('../').migrateProject(process.cwd(), options);
 }
 

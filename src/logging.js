@@ -92,6 +92,7 @@ class Logger {
 
     unmigrated(filename) {
         var event = new Event('task', `The following installed package should now be migrated: ${path.relative(cwd, filename)}`);
+        event.migrateTaglibFile = filename;
         this.pendingTasks.push(event);
         return event;
     }

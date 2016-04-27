@@ -38,20 +38,44 @@ function migrateProject(rootDir, options) {
     function finish() {
         logger.task(`Delete log file: ${relativePath(logFile)}`);
 
-        var results = logger.end();
+        function doFinish() {
+            logger.pendingTasks = logger.pendingTasks.filter((pendingTask) => {
+                if (pendingTask.migrateTaglibFile) {
+                    if (pendingTask.migrateTaglibFile.endsWith('lasso/marko-taglib.json')) {
+                        return false;
+                    } else if (pendingTask.migrateTaglibFile.endsWith('marko-widgets/marko-taglib.json')) {
+                        return false;
+                    }
+                }
 
-        console.log(results.output);
+                return true;
+            });
 
-        fs.writeFileSync(logFile, results.outputNoColor, { encoding: 'utf8' });
+            var results = logger.end();
 
-        if (results.warningCount) {
-            console.log(chalk.red.bold(`Migration completed with warning(s):`));
-        } else {
-            console.log(chalk.green('Migration completed successfully!:'));
+            console.log(results.output);
+
+            fs.writeFileSync(logFile, results.outputNoColor, { encoding: 'utf8' });
+
+            if (results.warningCount) {
+                console.log(chalk.red.bold(`Migration completed with warning(s):`));
+            } else {
+                console.log(chalk.green('Migration completed successfully!:'));
+            }
+
+            console.log(chalk.red.bold(`- ${results.warningCount} warning(s)`));
+            console.log(chalk.yellow.bold(`- ${results.pendingTaskCount} remaining task(s)`));
         }
 
-        console.log(chalk.red.bold(`- ${results.warningCount} warning(s)`));
-        console.log(chalk.yellow.bold(`- ${results.pendingTaskCount} remaining task(s)`));
+        if (options.afterScript) {
+            var afterFunc = require(options.afterScript);
+            afterFunc({
+                    rootDir: rootDir,
+                    logger: logger
+                }, doFinish);
+        } else {
+            doFinish();
+        }
     }
 
 
