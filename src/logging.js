@@ -144,3 +144,7 @@ exports.end = function() {
 exports.getLogger = function() {
     return logger;
 };
+
+exports.hasLogger = function() {
+    return logger != null;
+};

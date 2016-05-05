@@ -130,7 +130,10 @@ function tryNodeModules(parent, helper) {
 
             if (existsCached(taglibPath)) {
                 if (!existsCached(migratedTaglibPath)) {
-                    logging.getLogger().unmigrated(taglibPath);
+                    if (logging.getLogger()) {
+                        logging.getLogger().unmigrated(taglibPath);
+                    }
+
                 }
             } else if (existsCached(migratedTaglibPath)) {
                 taglibPath = migratedTaglibPath;
