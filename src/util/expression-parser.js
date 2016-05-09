@@ -19,6 +19,7 @@
 var stringify = require('raptor-json/stringify');
 var regexp = require('raptor-regexp');
 var ok = require('assert').ok;
+var handleBinaryOperators = require('./handleBinaryOperators');
 
 var endingTokens = {
         '${': '}',
@@ -230,6 +231,8 @@ ExpressionParserHelper.prototype = {
     },
     addExpression: function (expression, escapeXml) {
         this._endText();
+        expression = handleBinaryOperators(expression);
+
         escapeXml = escapeXml !== false;
         this._invokeCallback('expression', expression, escapeXml !== false);
     },

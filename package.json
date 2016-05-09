@@ -37,6 +37,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "jshint": "^2.9.1",
+    "marko-widgets": "^5.3.5",
     "mocha": "^2.4.5"
   }
 }

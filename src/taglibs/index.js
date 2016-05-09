@@ -31,3 +31,4 @@ registerTaglib(require.resolve('./marko-taglib-html.json'));
 registerTaglib(require.resolve('./marko-taglib-caching.json'));
 registerTaglib(require.resolve('./marko-taglib-layout.json'));
 registerTaglib(require.resolve('./marko-taglib-async.json'));
+registerTaglib(require.resolve('./marko-taglib-marko-widgets-patch.json'));

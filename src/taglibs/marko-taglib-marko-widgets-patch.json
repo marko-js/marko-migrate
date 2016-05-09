@@ -1,0 +1,13 @@
+{
+    "tags": {
+        "*": {
+            "attributes": {
+                "w-body": {
+                    "type": "expression",
+                    "preserve-name": true
+                }
+            },
+            "transformer": "./taglib/widgets-transformer.js"
+        }
+    }
+}
