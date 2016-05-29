@@ -7,7 +7,7 @@ function addAssign(fromEl, toEl) {
     fromEl.removeAttribute('var');
     fromEl.removeAttribute('value');
 
-    toEl.setAttributeValue(varAttr.value.value, valueAttr && valueAttr.value);
+    toEl.setAttributeValue(varAttr.value.value, (valueAttr && valueAttr.value) || "");
 }
 
 exports.transform = function(el) {
