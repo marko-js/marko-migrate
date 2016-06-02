@@ -24,6 +24,6 @@ exports.transform = function(el, context) {
 
     el.addAttribute({
         name: macroName,
-        argument: macroArgs
+        argument: macroArgs || ''
     });
 };
