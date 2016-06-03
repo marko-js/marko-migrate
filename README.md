@@ -31,6 +31,13 @@ cd my-project/
 marko-migrate --syntax concise
 ```
 
+## Migrate a single file and use the concise syntax
+
+```
+cd my-project/
+marko-migrate --template src/template.marko --syntax concise
+```
+
 # Example Output
 
 You will receive output similar to the following:
