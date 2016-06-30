@@ -21,18 +21,6 @@ function getMacroName(el) {
     }
 }
 
-function isExpressionType(targetType) {
-    return targetType === 'float' ||
-        targetType === 'double' ||
-        targetType === 'number' ||
-        targetType === 'integer' ||
-        targetType === 'int' ||
-        targetType === 'expression' ||
-        targetType === 'object' ||
-        targetType === 'boolean' ||
-        targetType === 'array';
-}
-
 var parserOptions  = {
     recognizeSelfClosing: true,
     recognizeCDATA: true,
@@ -116,15 +104,32 @@ function parse(src, filename, options) {
                     var value = attrs[name];
                     var attrDef = taglibLookup.getAttribute(tagName, name);
                     var targetType = 'string';
+                    var allowExpressions = true;
                     if (attrDef) {
+                        allowExpressions = attrDef.allowExpressions !== false;
                         targetType = attrDef.type || 'string';
                     }
 
+                     if (targetType === 'template' || targetType === 'path') {
+                        targetType = 'string';
+                    }
+
                     if (value) {
-                        if (targetType === 'string') {
-                            value = parseString(value);
-                        } else if (isExpressionType(targetType)) {
+                        if (targetType === 'expression' ||
+                            targetType === 'object' ||
+                            targetType === 'array') {
                             value = handleBinaryOperators(value);
+                            value = builder.parseExpression(value);
+                        } else if (targetType === 'custom' || targetType === 'identifier') {
+                            value = builder.literal(value);
+                        } else if (allowExpressions) {
+                            value = parseString(value, targetType);
+                        } else if (targetType === 'double' ||
+                            targetType === 'number' ||
+                            targetType === 'integer' ||
+                            targetType === 'int' ||
+                            targetType === 'boolean') {
+
                             value = builder.parseExpression(value);
                         } else {
                             value = builder.literal(value);
@@ -132,6 +137,8 @@ function parse(src, filename, options) {
                     } else {
                         value = null;
                     }
+
+
 
                     attributes.push({name, value});
                 });

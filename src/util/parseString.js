@@ -1,8 +1,10 @@
 var builder = require('marko/compiler').builder;
 var expressionParser = require('./expression-parser');
 
-function parseString(value) {
+function parseString(value, targetType) {
     var finalValue = '';
+
+    targetType = targetType || 'string';
 
     var hasText = false;
     var foundExpression;
@@ -28,7 +30,11 @@ function parseString(value) {
     if (!hasText && foundExpression) {
         return builder.parseExpression(foundExpression);
     } else {
-        return builder.literal(finalValue);
+        if (targetType === 'string') {
+            return builder.literal(finalValue);
+        } else {
+            return builder.parseExpression(finalValue);
+        }
     }
 }
 
