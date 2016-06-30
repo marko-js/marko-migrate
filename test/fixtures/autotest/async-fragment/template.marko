@@ -2,6 +2,16 @@
     var="userProfile"
     arg-userId="${data.userId}">
 
+    <async-fragment-placeholder>
+        This is alternate content while the async fragment is loading.
+    </async-fragment-placeholder>
+    <async-fragment-timeout>
+        A timeout has occurred!
+    </async-fragment-timeout>
+    <async-fragment-error>
+        A error has occurred!
+    </async-fragment-error>
+
     <ul>
         <li>
             First name: ${userProfile.firstName}
