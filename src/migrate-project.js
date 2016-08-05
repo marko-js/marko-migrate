@@ -31,6 +31,7 @@ function migrateProject(rootDir, options) {
     options = options || {};
 
     var pkgPath = path.join(rootDir, 'package.json');
+    var npmShrinkwrapPath = path.join(rootDir, 'npm-shrinkwrap.json');
 
     var logger = logging.begin();
     var logFile = path.join(rootDir, 'marko-migrate.log');
@@ -154,6 +155,12 @@ function migrateProject(rootDir, options) {
 
             logger.task('Run "npm install" to install the latest versions of packages.');
         }
+    }
+
+    if (fs.existsSync(npmShrinkwrapPath)) {
+        logger.removed(npmShrinkwrapPath);
+        rm(npmShrinkwrapPath);
+        logger.task('npm-shrinkwrap.json deleted. You will need to regenerate it');
     }
 
     var queue = [];

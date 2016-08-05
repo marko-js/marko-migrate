@@ -52,4 +52,8 @@ describe('marko-migrate/migrate-project' , function() {
     it('bad-taglib', function() {
         migrateProject('bad-taglib');
     });
+
+    it.only('npm-shrinkwrap', function() {
+        migrateProject('npm-shrinkwrap');
+    });
 });
