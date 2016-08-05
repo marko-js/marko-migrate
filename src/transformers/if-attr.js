@@ -2,6 +2,8 @@
 
 exports.transform = function(el) {
     let ifAttr = el.getAttribute('if');
-    ifAttr.argument = ifAttr.value.toString();
-    delete ifAttr.value;
+    if (ifAttr.value != null) {
+        ifAttr.argument = ifAttr.value.toString();
+        delete ifAttr.value;
+    }
 };

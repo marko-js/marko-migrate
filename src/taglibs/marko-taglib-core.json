@@ -146,6 +146,11 @@
         },
         "else": {
             "node-class": "./ElseNode",
+            "attributes": {
+                "test": {
+                    "type": "expression"
+                }
+            },
             "transformer": {
                 "path": "./else-tag-transformer",
                 "properties": {
