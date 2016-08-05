@@ -1,7 +1,12 @@
 'use strict';
 exports.transform = function(el, context) {
-    el.setTagName('macro');
     var functionAttrValue = el.getAttributeValue('function');
+    if (!functionAttrValue) {
+        return;
+    }
+
+    el.setTagName('macro');
+
     el.removeAttribute('function');
 
     var functionString = functionAttrValue.value.trim();

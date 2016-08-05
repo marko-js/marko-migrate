@@ -10,6 +10,10 @@ var handleBinaryOperators = require('./util/handleBinaryOperators');
 
 function getMacroName(el) {
     var functionAttrValue = el.getAttributeValue('function');
+    if (!functionAttrValue) {
+        return;
+    }
+
     var functionString = functionAttrValue.value.trim();
     var argIndex = functionString.indexOf('(');
 
@@ -145,7 +149,10 @@ function parse(src, filename, options) {
 
                 var el = builder.htmlElement(tagName, attributes);
                 if (el.tagName === 'def') {
-                    foundMacros[getMacroName(el)] = true;
+                    let macroName = getMacroName(el);
+                    if (macroName) {
+                        foundMacros[macroName] = true;
+                    }
                 }
 
                 currentParent.appendChild(el);
