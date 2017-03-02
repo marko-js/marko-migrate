@@ -23,7 +23,7 @@
     "htmlparser2": "^3.9.0",
     "jsonminify": "^0.4.1",
     "marko": "^3.0.3",
-    "marko-prettyprint": "^1.1.0",
+    "marko-prettyprint": "^1.3.3",
     "property-handlers": "^1.0.1",
     "raptor-json": "^1.1.0",
     "raptor-modules": "^1.2.7",
