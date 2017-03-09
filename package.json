@@ -32,7 +32,7 @@
     "raptor-util": "^3.1.0",
     "resolve-from": "^2.0.0",
     "semver": "^5.1.0",
-    "shelljs": "^0.7.5"
+    "shelljs": "0.7.6"
   },
   "devDependencies": {
     "chai": "^3.5.0",
