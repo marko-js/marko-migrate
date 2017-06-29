@@ -19,7 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "argly": "^1.0.0",
-    "chalk": "^1.1.1",
+    "chalk": "^2.0.0",
     "htmlparser2": "^3.9.0",
     "jsonminify": "^0.4.1",
     "marko": "^3.0.3",
