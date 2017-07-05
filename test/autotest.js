@@ -1,9 +1,10 @@
 'use strict';
 
-var fs = require('fs');
-var enabledTest = process.env.TEST;
-var path = require('path');
-var assert = require('assert');
+const fs = require('fs');
+const enabledTest = process.env.TEST;
+const updateExpectations = process.env.hasOwnProperty('UPDATE_EXPECTATIONS');
+const path = require('path');
+const assert = require('assert');
 
 function autoTest(name, dir, run, options, done) {
     var compareExtension = (options && options.compareExtension) || '.js';
@@ -50,7 +51,11 @@ function autoTest(name, dir, run, options, done) {
                     (isJSON ? actualJSON : actual) +
                     '\n---------');
         } catch(e) {
-            throw new Error('Unexpected output for test "' + name + '"');
+            if (updateExpectations) {
+                fs.writeFileSync(expectedPath, actual, { encoding: 'utf8'});
+            } else {
+                throw new Error('Unexpected output for test "' + name + '"', e);
+            }
         }
 
     }
