@@ -1,7 +1,9 @@
 'use strict';
-var cwd = process.cwd();
-var path = require('path');
-var chalk = require('chalk');
+
+const cwd = process.cwd();
+const path = require('path');
+const chalk = require('chalk');
+const stripAnsi = require('strip-ansi');
 
 var colors = {
     modified: chalk.yellow,
@@ -122,7 +124,7 @@ class Logger {
 
         return {
             output,
-            outputNoColor: chalk.stripColor(output),
+            outputNoColor: stripAnsi(output),
             warningCount: warnings.length,
             pendingTaskCount: pendingTasks.length
         };
