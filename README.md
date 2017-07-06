@@ -1,6 +1,8 @@
 Marko v3 Migration Tool
 =======================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/marko-js/marko-migrate.svg)](https://greenkeeper.io/)
+
 This tool can be used to migrate a project that uses Marko v2 to be compatible with Marko v3. All taglibs and templates within the project (excluding anything under `node_modules`) will automatically be migrated.
 
 # Installation
