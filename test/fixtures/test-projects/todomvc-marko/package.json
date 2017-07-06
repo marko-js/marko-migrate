@@ -33,7 +33,7 @@
     "lasso-less": "^2.0.6",
     "lasso-marko": "^2.0.3",
     "marko": "^2.7.3",
-    "marko-widgets": "^5.0.0-beta",
+    "marko-widgets": "^6.6.2",
     "native-promise-only": "^0.7.8-a",
     "raptor-args": "^1.0.2",
     "raptor-util": "^1.0.9",

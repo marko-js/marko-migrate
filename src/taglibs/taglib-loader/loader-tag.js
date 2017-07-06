@@ -381,6 +381,12 @@ TagHandlers.prototype = {
         });
     },
     /**
+    * Attributes used for autocomplete in text editors
+    */
+    autocomplete: function () {
+
+    },
+    /**
      * The tag type.
      */
     type: function(value) {
