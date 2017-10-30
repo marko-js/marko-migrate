@@ -17,7 +17,7 @@
 require('raptor-polyfill/string/endsWith');
 
 var raptorModulesUtil = require('raptor-modules/util');
-var logging = require('../logging');
+var logging = require('../../logging');
 var taglibLoader = require('./taglib-loader');
 var trailingSlashRegExp = /[\\/]$/;
 

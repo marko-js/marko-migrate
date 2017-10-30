@@ -1,200 +1,36 @@
-'use strict';
-var ok = require('assert').ok;
-var path = require('path');
-var htmlparser = require("htmlparser2");
-var builder = require('marko/compiler').builder;
-var expressionParser = require('./util/expression-parser');
-var parseString = require('./util/parseString');
-var taglibs = require('./taglibs');
-var handleBinaryOperators = require('./util/handleBinaryOperators');
+const resolveFrom = require('resolve-from');
+const path = require('path');
 
-function getMacroName(el) {
-    var functionAttrValue = el.getAttributeValue('function');
-    if (!functionAttrValue) {
-        return;
-    }
-
-    var functionString = functionAttrValue.value.trim();
-    var argIndex = functionString.indexOf('(');
-
-    // We need to separate out the arguments from the name
-    if (argIndex === -1) {
-        return functionString;
-    } else {
-        return functionString.substring(0, argIndex);
-    }
+function parseVersion(str) {
+  let parts = str.split('.');
+  let major = parseInt(parts[0], 10);
+  let minor = parseInt(parts[1], 10);
+  let patch = parseInt(parts[2], 10);
+  return {major, minor, patch};
 }
 
-var parserOptions  = {
-    recognizeSelfClosing: true,
-    recognizeCDATA: true,
-    lowerCaseTags: false,
-    lowerCaseAttributeNames: false,
-    xmlMode: false
-};
-
 function parse(src, filename, options) {
-    var logger = options && options.logger;
+  const dir = path.dirname(filename);
+  const markoPackagePath = resolveFrom(dir, 'marko/package.json');
 
-    ok(filename);
-    var taglibLookup = taglibs.buildLookup(path.dirname(filename), logger);
-    var root = builder.htmlElement('ROOT');
+  let markoPackage;
+  let markoCompiler;
 
-    var currentParent = root;
-    var stack = [currentParent];
-    var foundMacros = {};
+  if (markoPackagePath) {
+    markoPackage = require(markoPackagePath);
+    markoCompiler = require(path.dirname(markoPackagePath) + '/compiler');
+  } else {
+    markoPackage = require('marko/package.json');
+    markoCompiler = require('marko/compiler');
+  }
 
-    function handleText(text) {
+  const version = parseVersion(markoPackage.version);
 
-        var finalText = '';
-
-        expressionParser.parse(text, {
-            text: function (text, escapeXml) {
-                finalText += text;
-            },
-            expression: function (expression, escapeXml) {
-                // Marko v2 allowed macros to be invoked inside placeholders. For example:
-                // <li>${myMacro('foo', 'bar')}</li>
-                //
-                // That is no longer allowed so we convert the placeholder expressions into an
-                // `<invoke>` tag that will then be converted over to something like
-                // `<myMacro('a', 'b')/>`
-                var parsed;
-
-                try {
-                    parsed = builder.parseExpression(expression);
-                } catch(e) {}
-
-                if (parsed && parsed.type === 'FunctionCall') {
-                    var callee = parsed.callee;
-                    if (callee.type === 'Identifier') {
-                        var functionName = callee.name;
-                        if (foundMacros.hasOwnProperty(functionName)) {
-                            if (finalText) {
-                                let textNode = builder.text(builder.literal(finalText));
-                                currentParent.appendChild(textNode);
-                                finalText = '';
-                            }
-
-                            var invokeEl = builder.htmlElement('invoke', {
-                                'function': builder.literal(expression)
-                            });
-
-                            currentParent.appendChild(invokeEl);
-                            return;
-                        }
-                    }
-                }
-                finalText += (escapeXml ? '${' : '$!{') + expression + '}';
-            },
-            scriptlet: function (scriptlet) {
-                finalText += '<%' + scriptlet + '%>';
-            },
-            error: function (message) {
-                throw Error(message);
-            }
-        });
-
-        var textNode = builder.text(builder.literal(finalText));
-        currentParent.appendChild(textNode);
-    }
-
-    var parser = new htmlparser.Parser({
-            onopentag: function(tagName, attrs) {
-                tagName = tagName.replace(/[.]/g, ':');
-
-                var attributes = [];
-                Object.keys(attrs).forEach((name) => {
-                    var value = attrs[name];
-                    var attrDef = taglibLookup.getAttribute(tagName, name);
-                    var targetType = 'string';
-                    var allowExpressions = true;
-                    if (attrDef) {
-                        allowExpressions = attrDef.allowExpressions !== false;
-                        targetType = attrDef.type || 'string';
-                    }
-
-                     if (targetType === 'template' || targetType === 'path') {
-                        targetType = 'string';
-                    }
-
-                    if (value) {
-                        if (targetType === 'expression' ||
-                            targetType === 'object' ||
-                            targetType === 'array') {
-                            value = handleBinaryOperators(value);
-                            value = builder.parseExpression(value);
-                        } else if (targetType === 'custom' || targetType === 'identifier') {
-                            value = builder.literal(value);
-                        } else if (allowExpressions) {
-                            value = parseString(value, targetType);
-                        } else if (targetType === 'double' ||
-                            targetType === 'number' ||
-                            targetType === 'integer' ||
-                            targetType === 'int' ||
-                            targetType === 'boolean') {
-
-                            value = builder.parseExpression(value);
-                        } else {
-                            value = builder.literal(value);
-                        }
-                    } else {
-                        value = null;
-                    }
-
-
-
-                    attributes.push({name, value});
-                });
-
-                var el = builder.htmlElement(tagName, attributes);
-                if (el.tagName === 'def') {
-                    let macroName = getMacroName(el);
-                    if (macroName) {
-                        foundMacros[macroName] = true;
-                    }
-                }
-
-                currentParent.appendChild(el);
-                currentParent = el;
-                stack.push(el);
-            },
-            onprocessinginstruction: function(name, data) {
-                if (data.startsWith('!')) {
-                    var doctypeNode = builder.documentType(builder.literal(data.substring(1)));
-                    currentParent.appendChild(doctypeNode);
-                } else if (data.startsWith('?') && data.endsWith('?')) {
-                    var declarationNode = builder.declaration(builder.literal(data.substring(1, data.length-1)));
-                    currentParent.appendChild(declarationNode);
-                } else {
-                    handleText('<' + data + '>');
-                }
-            },
-
-            oncdatastart: function() {
-                handleText('<![CDATA[');
-            },
-            oncdataend: function() {
-                handleText(']]>');
-            },
-
-            ontext: function(text){
-                handleText(text);
-            },
-            onclosetag: function(name){
-                stack.pop();
-                currentParent = stack[stack.length - 1];
-            },
-            oncomment: function(comment) {
-                var commentNode = builder.htmlComment(builder.literal(comment));
-                currentParent.appendChild(commentNode);
-            }
-        }, parserOptions);
-
-    parser.write(src);
-    parser.end();
-
-    return root;
+  if (markoCompiler.parseRaw) {
+    return markoCompiler.parseRaw(src, filename);
+  } else if (version.major === 2) {
+    return require('./marko-2').parse(src, filename, options);
+  }
 }
 
 exports.parse = parse;

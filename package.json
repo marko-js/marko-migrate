@@ -4,9 +4,9 @@
   "description": "",
   "main": "./src/index.js",
   "scripts": {
-    "test": "npm run mocha && npm run jshint",
+    "test": "npm run mocha && npm run eslint",
     "mocha": "node_modules/.bin/mocha --ui bdd --reporter spec ./test",
-    "jshint": "node_modules/.bin/jshint bin/ src/"
+    "eslint": "node_modules/.bin/eslint bin/ src/"
   },
   "bin": {
     "marko-migrate": "bin/marko-migrate"
@@ -22,7 +22,7 @@
     "chalk": "^2.0.0",
     "htmlparser2": "^3.9.0",
     "jsonminify": "^0.4.1",
-    "marko": "^3.0.3",
+    "marko": "^4.5.6",
     "marko-prettyprint": "^1.1.0",
     "property-handlers": "^1.0.1",
     "raptor-json": "^1.1.0",
@@ -32,12 +32,12 @@
     "raptor-util": "^3.1.0",
     "resolve-from": "^3.0.0",
     "semver": "^5.1.0",
-    "shelljs": "^0.7.5",
+    "shelljs": "^0.7.8",
     "strip-ansi": "^4.0.0"
   },
   "devDependencies": {
     "chai": "^4.0.0",
-    "jshint": "^2.9.1",
+    "eslint": "^4.10.0",
     "marko-widgets": "^6.6.2",
     "mocha": "^3.2.0"
   },

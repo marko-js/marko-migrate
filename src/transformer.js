@@ -52,7 +52,7 @@ exports.transform = function transform(ast) {
     var context = new TransformerContext();
 
     var walker = markoCompiler.createWalker({
-        exit: function(node, parent) {
+        exit: function(node) {
             if (node.type === 'HtmlElement') {
                 let tagName = node.tagName;
                 var tagTransformer = transformers[tagName + '-tag'];
@@ -91,7 +91,6 @@ exports.transform = function transform(ast) {
 
         ast.prependChild(scriptEl);
     }
-
 
     return ast;
 };

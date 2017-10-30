@@ -180,7 +180,7 @@ TaglibHandlers.prototype = {
 
                                 try {
                                     importPath = resolveFrom(dirname, dependencyName + '/marko-taglib.json');
-                                } catch(e) {}
+                                } catch(e) { /* ignore */ }
 
                                 if (importPath) {
                                     taglib.addImport(importPath);
@@ -300,7 +300,7 @@ exports.loadTaglib = function(path, taglib) {
         try {
             var pkg = require(packageJsonPath);
             taglib.id = pkg.name;
-        } catch(e) {}
+        } catch(e) { /* ignore */ }
 
         if (!taglib.id) {
             taglib.id = path;

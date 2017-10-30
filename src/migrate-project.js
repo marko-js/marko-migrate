@@ -1,13 +1,13 @@
 'use strict';
 
-require('shelljs/global');
-var path = require('path');
-var fs = require('fs');
-var transformTemplate = require('./transform-template');
-var logging = require('./logging');
-var chalk = require('chalk');
+const shell = require('shelljs');
+const path = require('path');
+const fs = require('fs');
+const transformTemplate = require('./transform-template');
+const logging = require('./logging');
+const chalk = require('chalk');
 
-var semver = require('semver');
+const semver = require('semver');
 const MARKO_VERSION = '^3.0.3';
 const MARKO_WIDGETS_VERSION = '^6.0.0';
 const LASSO_VERSION = '^2.0.0';
@@ -24,8 +24,6 @@ function isExcluded(name) {
         return true;
     }
 }
-
-
 
 function migrateProject(rootDir, options) {
     options = options || {};
@@ -96,7 +94,7 @@ function migrateProject(rootDir, options) {
             }
 
             var sourceFile = path.join(dir, file);
-            cp('-R', sourceFile, targetDir + '/');
+            shell.cp('-R', sourceFile, targetDir + '/');
         });
     }
 
@@ -104,7 +102,7 @@ function migrateProject(rootDir, options) {
     logger.task(`Delete backup directory: ${relativePath(backupDir)}`);
 
     var cacheDir = path.join(rootDir, '.cache/');
-    rm('-rf', cacheDir);
+    shell.rm('-rf', cacheDir);
     logger.removed(cacheDir);
 
     function updatePkgDependencies(pkg, dependenciesType, modifiedList) {
@@ -159,7 +157,7 @@ function migrateProject(rootDir, options) {
 
     if (fs.existsSync(npmShrinkwrapPath)) {
         logger.removed(npmShrinkwrapPath);
-        rm(npmShrinkwrapPath);
+        shell.rm(npmShrinkwrapPath);
         logger.task('npm-shrinkwrap.json deleted. You will need to regenerate it');
     }
 
@@ -225,7 +223,7 @@ function migrateProject(rootDir, options) {
 
     markoTaglibs.forEach((taglibInfo) => {
         logger.moved(taglibInfo.filePath, taglibInfo.newFilePath);
-        mv(taglibInfo.filePath, taglibInfo.newFilePath);
+        shell.mv(taglibInfo.filePath, taglibInfo.newFilePath);
     });
 
     finish();

@@ -20,16 +20,13 @@ var Taglib = require('../Taglib');
 var propertyHandlers = require('property-handlers');
 var isObjectEmpty = require('raptor-util/isObjectEmpty');
 var nodePath = require('path');
-var ok = require('assert').ok;
 var bodyFunctionRegExp = /^([A-Za-z_$][A-Za-z0-9_]*)(?:\(([^)]*)\))?$/;
 var safeVarName = /^[A-Za-z_$][A-Za-z0-9_]*$/;
 var handleAttributes = require('./handleAttributes');
-var Taglib = require('../Taglib');
-var propertyHandlers = require('property-handlers');
 var forEachEntry = require('raptor-util').forEachEntry;
 var loader = require('./loader');
 var resolveFrom = require('resolve-from');
-var logging = require('../../logging');
+var logging = require('../../../logging');
 
 function relativePath(filename) {
     return nodePath.relative(process.cwd(), filename);
@@ -428,16 +425,16 @@ TagHandlers.prototype = {
             this.tag.escapeXmlBody = false;
         }
     },
-    openTagOnly: function(value) {
+    openTagOnly: function() {
         // Marko v3 -- Just ignore
     },
-    codeGenerator: function(value) {
+    codeGenerator: function() {
         // Marko v3 -- Just ignore
     },
-    nodeFactory: function(value) {
+    nodeFactory: function() {
         // Marko v3 -- Just ignore
     },
-    body: function(value) {
+    body: function() {
         // Marko v3 -- Just ignore
     }
 };

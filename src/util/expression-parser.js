@@ -101,7 +101,7 @@ function errorContext(str, pos, length) {
     return context;
 }
 function getConditionalExpression(expression) {
-    var tokensRegExp = /"(?:[^"]|\\")*"|'(?:[^']|\\')*'|\\\\;|\\;|[\{\};]/g;
+    var tokensRegExp = /"(?:[^"]|\\")*"|'(?:[^']|\\')*'|\\\\;|\\;|[{};]/g;
     var matches;
     var depth = 0;
     var parts = [];
@@ -360,7 +360,7 @@ parse = function (str, listeners, options) {
             }
             isScriptlet = startToken === '{%';
             isConditional = startToken === '{?';
-            var endRegExp = /"((?:[^"]|\\")*)"|'((?:[^']|\\')*)'|\%\}|[\{\}]/g;
+            var endRegExp = /"((?:[^"]|\\")*)"|'((?:[^']|\\')*)'|%\}|[{}]/g;
             //Now we need to find the ending curly
             endRegExp.lastIndex = expressionStart;
             var depth = 0;
