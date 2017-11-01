@@ -1,0 +1,7 @@
+{
+    "<my-custom-tag>": {
+        "renderer": "./foo.js",
+        "@expression": "expression",
+        "@string": "string"
+    }
+}

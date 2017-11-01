@@ -1,8 +1,5 @@
-<div class="${data.foo and data.bar}">
-</div>
-<div class="${data.foo or data.bar}">
-</div>
-<div class="${data.foo lt data.bar}">
-</div>
-
-<my-custom-tag expression="data.foo ne data.bar" string="${data.foo gt data.bar}"/>
+<div class=(data.foo && data.bar)/>
+<div class=(data.foo || data.bar)/>
+<div class=(data.foo < data.bar)/>
+<my-custom-tag expression=(data.foo !== data.bar)
+    string=(data.foo > data.bar)/>

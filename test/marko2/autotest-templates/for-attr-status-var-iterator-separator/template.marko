@@ -1,3 +1,3 @@
-<div for="color in colors; status-var=myLoop; iterator=data.myIterator; separator=', '">
+<div for(color in colors | separator=", " iterator=data.myIterator status-var=myLoop)>
     Hello
 </div>

@@ -24,13 +24,14 @@
     "jsonminify": "^0.4.1",
     "marko": "^4.5.6",
     "marko-prettyprint": "^1.1.0",
+    "prompt": "^1.0.0",
     "property-handlers": "^1.0.1",
     "raptor-json": "^1.1.0",
     "raptor-modules": "^1.2.7",
     "raptor-polyfill": "^1.0.2",
     "raptor-regexp": "^1.0.1",
     "raptor-util": "^3.1.0",
-    "resolve-from": "^3.0.0",
+    "resolve-from": "^4.0.0",
     "semver": "^5.1.0",
     "shelljs": "^0.7.8",
     "strip-ansi": "^4.0.0"
@@ -39,7 +40,8 @@
     "chai": "^4.0.0",
     "eslint": "^4.10.0",
     "marko-widgets": "^6.6.2",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "prettier": "^1.7.4"
   },
   "greenkeeper": {
     "ignore": [

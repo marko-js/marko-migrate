@@ -1,12 +1,11 @@
-<def function="myMacro(foo, bar)">
+<macro myMacro(foo, bar)>
     <div>${foo} - ${bar}</div>
-</def>
-
+</macro>
 <ul>
     <li>
-        ${myMacro('a', 'b')}
+        <myMacro('a', 'b')/>
     </li>
     <li>
-        ${myMacro('c', 'c')}
+        <myMacro('c', 'c')/>
     </li>
 </ul>
