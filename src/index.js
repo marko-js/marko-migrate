@@ -143,7 +143,7 @@ async function migrate(options) {
   if (options.dir) {
     rootDir = getRootDir(options.dir);
   } else if (options.template) {
-    rootDir = getRootDir(path.dirname(options.dir));
+    rootDir = getRootDir(path.dirname(options.template));
   }
 
   let context = new MigrateContext(options, logger, rootDir);

@@ -26,6 +26,16 @@ class MigrateContext {
   }
 
   registerAttrTransform(attrName, transform) {
+    if (!attrName) {
+      attrName = "ANY";
+    }
+
+    if (typeof transform === "function") {
+      transform = {
+        transform
+      };
+    }
+
     let attrTransformers =
       this.attrTransformers[attrName] || (this.attrTransformers[attrName] = []);
     attrTransformers.push(transform);
@@ -38,7 +48,7 @@ class MigrateContext {
       tagTransformers = tagTransformers.concat(this.tagTransformers.ANY);
     }
 
-    if (tagTransformers) {
+    if (tagTransformers && tagTransformers.length) {
       tagTransformers.forEach(tagTransformer => {
         if (tagTransformer && tagTransformer[methodName]) {
           let result = tagTransformer[methodName](el, this);
@@ -52,9 +62,13 @@ class MigrateContext {
     let attrs = el.getAttributes();
     attrs.forEach(attr => {
       let attrName = attr.name;
-      let attrTransformers = this.attrTransformers[attrName];
+      let attrTransformers = this.attrTransformers[attrName] || [];
 
-      if (attrTransformers) {
+      if (this.attrTransformers.ANY) {
+        attrTransformers = attrTransformers.concat(this.attrTransformers.ANY);
+      }
+
+      if (attrTransformers && attrTransformers.length) {
         attrTransformers.forEach(attrTransformer => {
           if (attrTransformer && attrTransformer[methodName]) {
             attrTransformer[methodName](el, attr, this);

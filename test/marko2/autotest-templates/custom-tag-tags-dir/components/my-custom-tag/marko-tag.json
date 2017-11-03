@@ -1,6 +1,0 @@
-{
-    "renderer": "./foo.js",
-    "@expression": "expression",
-    "@string": "string",
-    "@boolean": "boolean"
-}

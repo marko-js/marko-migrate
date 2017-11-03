@@ -48,10 +48,12 @@ async function gitRenameFile(oldFile, newFile) {
 }
 
 async function renameFile(oldFile, newFile) {
-  try {
-    shell.rm("-rf", newFile);
-  } catch (e) {
-    // Ignore
+  if (oldFile.toLowerCase() !== newFile.toLowerCase()) {
+    try {
+      shell.rm("-rf", newFile);
+    } catch (e) {
+      // Ignore
+    }
   }
 
   try {
@@ -69,12 +71,12 @@ async function renameFile(oldFile, newFile) {
   }
 
   // One more rename to ensure that the file name is put in with the correct case
-  // let dir = path.dirname(newFile);
-  // let basename = path.basename(newFile);
-  // let tempFile = path.join(dir, "~" + basename);
-  //
-  // fs.renameSync(newFile, tempFile);
-  // fs.renameSync(tempFile, newFile);
+  let dir = path.dirname(newFile);
+  let basename = path.basename(newFile);
+  let tempFile = path.join(dir, "~" + basename);
+
+  fs.renameSync(newFile, tempFile);
+  fs.renameSync(tempFile, newFile);
 }
 
 async function renameComponentFiles(context) {
@@ -143,6 +145,7 @@ async function renameComponentFiles(context) {
     for (let i = 0; i < oldFilePaths.length; i++) {
       let oldFilePath = oldFilePaths[i];
       let newFilePath = renames[oldFilePath];
+
       await renameFile(oldFilePath, newFilePath);
     }
   }

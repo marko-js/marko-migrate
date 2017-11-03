@@ -38,10 +38,7 @@ module.exports = function(markoVersion) {
       }
     });
 
-    var srcAutoTestDir = path.join(
-      __dirname,
-      `../autotest-templates-${markoVersion}`
-    );
+    var srcAutoTestDir = path.join(__dirname, `../autotest-templates`);
     var targetAutoTestDir = path.join(
       __dirname,
       `../${markoVersion}/autotest-templates`
@@ -69,7 +66,7 @@ module.exports = function(markoVersion) {
         autoPascalCase: true
       });
 
-      helpers.compare(result.html, ".marko");
+      helpers.compare(result.html || "", ".marko");
 
       if (test && test.check) {
         await test.check(targetDir);
