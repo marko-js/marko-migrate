@@ -8,6 +8,10 @@ exports.transform = function(el) {
   }
 
   let forAttr = el.getAttribute("for");
+  if (forAttr.argument) {
+    return;
+  }
+
   let value = forAttr.value;
   let stringValue = value.value;
 

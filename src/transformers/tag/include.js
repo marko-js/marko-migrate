@@ -1,14 +1,17 @@
-'use strict';
+"use strict";
 
 exports.transform = function(el) {
-    let templateAttr = el.getAttribute('template');
-    let templateDataAttr = el.getAttribute('template-data');
-    el.removeAttribute('template');
-    el.removeAttribute('template-data');
+  if (el.argument) {
+    return;
+  }
+  let templateAttr = el.getAttribute("template");
+  let templateDataAttr = el.getAttribute("template-data");
+  el.removeAttribute("template");
+  el.removeAttribute("template-data");
 
-    el.argument = templateAttr.value.toString();
+  el.argument = templateAttr.value.toString();
 
-    if (templateDataAttr) {
-        el.argument += ', ' + templateDataAttr.value;
-    }
+  if (templateDataAttr) {
+    el.argument += ", " + templateDataAttr.value;
+  }
 };

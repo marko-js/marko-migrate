@@ -6,9 +6,11 @@ const chalk = require("chalk");
 const transformTemplate = require("./transformTemplate");
 const logging = require("./logging");
 const MigrateContext = require("./MigrateContext");
+const { getRootDir } = require("lasso-package-root");
 
 function relativePath(filename) {
-  return path.relative(process.cwd(), filename);
+  let relativePath = path.relative(process.cwd(), filename);
+  return relativePath || ".";
 }
 
 function isExcluded(name) {
@@ -43,11 +45,10 @@ async function loadTasks(context) {
 async function migrateTemplate(filePath, context) {
   try {
     let transformedSrc = await transformTemplate(filePath, context);
-    fs.writeFileSync(filePath, transformedSrc, { encoding: "utf8" });
-    context.logger.modified(filePath);
+    context.queueWriteTemplateFile(filePath, transformedSrc);
     return transformedSrc;
   } catch (e) {
-    context.logger.warn(
+    context.logger.error(
       `Unable to migrate template at path "${relativePath(
         filePath
       )}". Error: ${e.stack || e}`
@@ -71,11 +72,17 @@ async function migrateDirTree(rootDir, context) {
   }
 
   async function migrateDir(dir) {
+    console.log(`Migrating directory: ${relativePath(dir)}`);
+
+    await context.events.emitAsync("beforeMigrateDirectory", {
+      dir
+    });
+
     var filenames = fs.readdirSync(dir);
     for (let i = 0; i < filenames.length; i++) {
       let name = filenames[i];
       if (isExcluded(name)) {
-        return;
+        continue;
       }
 
       let filePath = path.join(dir, name);
@@ -83,13 +90,16 @@ async function migrateDirTree(rootDir, context) {
       let stats = fs.statSync(filePath);
       if (stats.isDirectory()) {
         enqueue(filePath);
-        return;
-      }
-
-      if (name.endsWith(".marko")) {
+      } else if (name.endsWith(".marko")) {
         await migrateTemplate(filePath, context);
       }
     }
+
+    await context.events.emitAsync("afterMigrateDirectory", {
+      dir
+    });
+
+    console.log("Done migrating directory:", relativePath(dir));
   }
 
   enqueue(rootDir);
@@ -127,11 +137,22 @@ async function migrate(options) {
 
   let logFile;
   let logger = logging.begin();
-  let context = new MigrateContext(options, logger);
+
+  let rootDir;
+
+  if (options.dir) {
+    rootDir = getRootDir(options.dir);
+  } else if (options.template) {
+    rootDir = getRootDir(path.dirname(options.dir));
+  }
+
+  let context = new MigrateContext(options, logger, rootDir);
 
   await loadTasks(context);
   await loadTransformers("tag", context);
   await loadTransformers("attr", context);
+
+  console.log("Migrating project...");
 
   await context.events.emitAsync("beforeMigrateProject");
 
@@ -143,6 +164,8 @@ async function migrate(options) {
     logFile = path.join(options.dir, "marko-migrate.log");
     await migrateDirTree(options.dir, context);
   }
+
+  await context.writeModifiedTemplatesToDisk();
 
   await context.events.emitAsync("afterMigrateProject");
 
@@ -160,13 +183,15 @@ async function migrate(options) {
     console.log(chalk.green("Migration completed successfully!:"));
   }
 
-  console.log(chalk.red.bold(`- ${results.warningCount} warning(s)`));
+  console.log(chalk.yellow.bold(`- ${results.warningCount} warning(s)`));
+  console.log(chalk.red.bold(`- ${results.errorCount} error(s)`));
   console.log(
-    chalk.yellow.bold(`- ${results.pendingTaskCount} remaining task(s)`)
+    chalk.magenta.bold(`- ${results.pendingTaskCount} remaining task(s)`)
   );
 
   return {
-    html
+    html,
+    success: results.errorCount === 0
   };
 }
 

@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
 exports.transform = function(el) {
-    let testAttr = el.getAttribute('test');
-    el.removeAttribute('test');
-    el.argument = testAttr.value.toString();
+  let testAttr = el.getAttribute("test");
+  el.removeAttribute("test");
+  el.argument = testAttr.value.toString();
 };

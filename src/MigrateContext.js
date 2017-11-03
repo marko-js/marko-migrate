@@ -1,14 +1,18 @@
 const EventEmitterAsync = require("./util/EventEmitterAsync");
+const fs = require("fs");
+const { getRootDir } = require("lasso-package-root");
 
 class MigrateContext {
-  constructor(options, logger) {
+  constructor(options, logger, rootDir) {
     this.options = options || {};
     this.logger = logger;
     this.global = {};
     this.events = new EventEmitterAsync();
     this.tagTransformers = {};
     this.attrTransformers = {};
+    this.queuedTemplateFiles = [];
     this.template = null; // TemplateContext when transforming a template
+    this.rootDir = rootDir || process.cwd();
   }
 
   registerTagTransform(tagName, transform) {
@@ -58,6 +62,29 @@ class MigrateContext {
         });
       }
     });
+  }
+
+  queueWriteTemplateFile(filePath, src) {
+    this.queuedTemplateFiles.push({
+      filePath,
+      src
+    });
+  }
+
+  async writeModifiedTemplatesToDisk() {
+    console.log("Writing modified templates to disk...");
+
+    let queuedTemplateFiles = this.queuedTemplateFiles;
+    for (let entry of queuedTemplateFiles) {
+      let filePath = entry.filePath;
+      let transformedSrc = entry.src;
+      fs.writeFileSync(filePath, transformedSrc, { encoding: "utf8" });
+      this.logger.modified(filePath);
+    }
+  }
+
+  isDirectoryInProject(dir) {
+    return getRootDir(dir) === this.rootDir;
   }
 }
 
