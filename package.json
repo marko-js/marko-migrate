@@ -26,7 +26,7 @@
     "marko": "^4.5.6",
     "marko-prettyprint": "^1.1.0",
     "prompt": "^1.0.0",
-    "property-handlers": "^1.0.1",
+    "property-handlers": "1.1.0",
     "raptor-json": "^1.1.0",
     "raptor-modules": "^1.2.7",
     "raptor-polyfill": "^1.0.2",
