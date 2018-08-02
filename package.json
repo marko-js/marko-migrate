@@ -29,7 +29,7 @@
     "property-handlers": "^1.0.1",
     "raptor-json": "^1.1.0",
     "raptor-modules": "^1.2.7",
-    "raptor-polyfill": "^1.0.2",
+    "raptor-polyfill": "^1.1.0",
     "raptor-regexp": "^1.0.1",
     "raptor-util": "^3.1.0",
     "resolve-from": "^4.0.0",
