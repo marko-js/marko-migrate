@@ -20,7 +20,7 @@
   "dependencies": {
     "argly": "^1.0.0",
     "chalk": "^2.0.0",
-    "htmlparser2": "^3.9.0",
+    "htmlparser2": "3.9.2",
     "jsonminify": "^0.4.1",
     "lasso-package-root": "^1.0.1",
     "marko": "^4.5.6",
