@@ -24,7 +24,7 @@
     "jsonminify": "^0.4.1",
     "lasso-package-root": "^1.0.1",
     "marko": "^4.5.6",
-    "marko-prettyprint": "^1.1.0",
+    "marko-prettyprint": "^1.5.2",
     "prompt": "^1.0.0",
     "property-handlers": "^1.0.1",
     "raptor-json": "^1.1.0",
