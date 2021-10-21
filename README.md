@@ -1,5 +1,7 @@
-Marko v3 Migration Tool
+Marko v2 => v3 Migration Tool
 =======================
+
+## For v3 => v4 use https://github.com/marko-js/cli/blob/main/packages/migrate/README.md
 
 This tool can be used to migrate a project that uses Marko v2 to be compatible with Marko v3. All taglibs and templates within the project (excluding anything under `node_modules`) will automatically be migrated.
 
